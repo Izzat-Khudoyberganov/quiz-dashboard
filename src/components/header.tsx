@@ -11,7 +11,7 @@ const Header = () => {
         <header className='p-4 border-slate-800 border-b-[1px]'>
             <div className='container'>
                 <div className='flex items-center justify-between'>
-                    <Link to={"/"} className='font-bold'>
+                    <Link to={"/"} className='font-bold text-3xl'>
                         QUIZ APP
                     </Link>
                     <div className='flex items-center gap-4'>

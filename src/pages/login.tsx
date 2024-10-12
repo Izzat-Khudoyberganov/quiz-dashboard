@@ -24,8 +24,13 @@ import {
 } from "@/components/ui/card";
 import { PasswordInput } from "@/components/password-input";
 import { loginFormSchema } from "@/utils/schema";
+import { toast, Toaster } from "sonner";
+import { useContext, useState } from "react";
+import { UserContext } from "@/context/user-provider";
 
 function LoginPage() {
+    const { handleUser } = useContext(UserContext);
+    const [loading, setLoading] = useState<boolean>(false);
     const form = useForm<z.infer<typeof loginFormSchema>>({
         resolver: zodResolver(loginFormSchema),
         defaultValues: {
@@ -34,8 +39,18 @@ function LoginPage() {
         },
     });
 
-    function onSubmit(values: z.infer<typeof loginFormSchema>) {
-        console.log(values);
+    async function onSubmit(values: z.infer<typeof loginFormSchema>) {
+        setLoading(true);
+        // toast("Processing...", { duration: 2000 });
+        if (values.login == "login" && values.password == "password") {
+            setTimeout(() => {
+                handleUser();
+            }, 1000);
+            toast.success("Action completed successfully!");
+        } else {
+            toast.error("Login or password is wrong!");
+        }
+        setLoading(false);
     }
 
     return (
@@ -96,10 +111,13 @@ function LoginPage() {
                                     </div>
                                 </div>
                                 <div className='mt-4 flex items-center justify-between'>
-                                    <Button type='reset' variant='secondary'>
-                                        Reset
-                                    </Button>
-                                    <Button type='submit' variant='outline'>
+                                    <Button
+                                        type='submit'
+                                        size='lg'
+                                        variant='outline'
+                                        className='w-full'
+                                        disabled={loading}
+                                    >
                                         Submit
                                     </Button>
                                 </div>
@@ -107,6 +125,7 @@ function LoginPage() {
                         </Form>
                     </CardContent>
                 </Card>
+                <Toaster />
             </div>
         </>
     );

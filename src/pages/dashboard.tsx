@@ -6,7 +6,7 @@ const Dashboard = () => {
             <Header />
             <main className='flex '>
                 <Sidebar />
-                <div className='w-full  m-5 border-[1px] border-gray-400 rounded-lg'>
+                <div className='w-full  m-5 border-[1px] border-slate-800 rounded-lg'>
                     <Layout />
                 </div>
             </main>
