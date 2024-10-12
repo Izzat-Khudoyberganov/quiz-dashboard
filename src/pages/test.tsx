@@ -1,5 +1,11 @@
+import { TestModal } from "@/components";
+
 const Test = () => {
-    return <div>Test</div>;
+    return (
+        <div>
+            <TestModal />
+        </div>
+    );
 };
 
 export default Test;

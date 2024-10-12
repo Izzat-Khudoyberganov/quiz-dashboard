@@ -10,7 +10,7 @@ export const UserContext = createContext({
 });
 
 export function UserContextProvider({ children }: Children) {
-    const [user, setUser] = useState<boolean>(false);
+    const [user, setUser] = useState<boolean>(true);
 
     function handleUser(): void {
         setUser(!user);

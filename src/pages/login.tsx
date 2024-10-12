@@ -22,11 +22,12 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { PasswordInput } from "@/components/password-input";
 import { loginFormSchema } from "@/utils/schema";
 import { toast, Toaster } from "sonner";
 import { useContext, useState } from "react";
 import { UserContext } from "@/context/user-provider";
+import { PasswordInput } from "@/components/ui/password-input";
+import { urls } from "@/utils/urls";
 
 function LoginPage() {
     const { handleUser } = useContext(UserContext);
@@ -42,15 +43,27 @@ function LoginPage() {
     async function onSubmit(values: z.infer<typeof loginFormSchema>) {
         setLoading(true);
         // toast("Processing...", { duration: 2000 });
-        if (values.login == "login" && values.password == "password") {
-            setTimeout(() => {
-                handleUser();
-            }, 1000);
-            toast.success("Action completed successfully!");
-        } else {
-            toast.error("Login or password is wrong!");
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}${urls.login}`,
+                {
+                    method: "POST",
+                    body: JSON.stringify(values),
+                }
+            );
+            if (res.status == 201) {
+                toast.success("Action completed successfully!");
+                setTimeout(() => {
+                    handleUser();
+                }, 1500);
+            } else {
+                toast.error("Could not login, check login and password!");
+            }
+        } catch (err) {
+            console.error("err");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     }
 
     return (
