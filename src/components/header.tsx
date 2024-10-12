@@ -3,6 +3,7 @@ import { ModeToggle } from "./ui/theme-toggler";
 import LogoutBtn from "./ui/logout-btn";
 import { useContext } from "react";
 import { UserContext } from "@/context/user-provider";
+import { Link } from "react-router-dom";
 
 const Header = () => {
     const { user } = useContext(UserContext);
@@ -10,7 +11,9 @@ const Header = () => {
         <header className='p-4 border-slate-800 border-b-[1px]'>
             <div className='container'>
                 <div className='flex items-center justify-between'>
-                    <a href=''>QUIZ APP</a>
+                    <Link to={"/"} className='font-bold'>
+                        QUIZ APP
+                    </Link>
                     <div className='flex items-center gap-4'>
                         {user && (
                             <Avatar>

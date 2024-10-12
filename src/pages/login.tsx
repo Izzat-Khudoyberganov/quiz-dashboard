@@ -42,7 +42,7 @@ function LoginPage() {
         <>
             <Header />
             <div className='w-full h-[90vh] flex items-center justify-center'>
-                <Card className='w-[350px]'>
+                <Card className='w-[450px]'>
                     <CardHeader>
                         <CardTitle className='text-3xl text-center'>
                             Login
@@ -95,8 +95,13 @@ function LoginPage() {
                                         />
                                     </div>
                                 </div>
-                                <div>
-                                    <Button type='submit'>Submit</Button>
+                                <div className='mt-4 flex items-center justify-between'>
+                                    <Button type='reset' variant='secondary'>
+                                        Reset
+                                    </Button>
+                                    <Button type='submit' variant='outline'>
+                                        Submit
+                                    </Button>
                                 </div>
                             </form>
                         </Form>
