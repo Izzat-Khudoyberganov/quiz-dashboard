@@ -13,18 +13,30 @@ import {
 import { Button } from "./ui/button";
 import { truncateString } from "@/utils/helper";
 import { DeleteModal, EditModal } from "./modals";
+import useModal from "@/hooks/useModal";
+
+interface TestDataI {
+    ID: number;
+    Title: string;
+    Options: string;
+}
 
 function TestModal() {
-    const [data, setData] = useState([]);
-    const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
-    const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+    const [data, setData] = useState<TestDataI[]>([]);
+    const [testId, setTestId] = useState<number>(0);
 
-    function handleEditModal(): void {
-        setEditModalOpen(!editModalOpen);
-    }
+    const { isModalOpen: editModalOpen, toggleModal: handleEditModal } =
+        useModal();
 
-    function handleDeleteModal(): void {
-        setDeleteModalOpen(!deleteModalOpen);
+    const {
+        isModalOpen: deleteModalOpen,
+        setIsModalOpen,
+        toggleModal: deleteModalToggler,
+    } = useModal();
+
+    function handleDeleteModal(id: number) {
+        setTestId(id);
+        setIsModalOpen(!deleteModalOpen);
     }
 
     async function getData() {
@@ -50,13 +62,15 @@ function TestModal() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {data.map(({ ID, Title, Options }) => (
-                    <TableRow key={ID}>
-                        <TableCell className='font-medium'>{ID}</TableCell>
+                {data.map((el) => (
+                    <TableRow key={el.ID}>
+                        <TableCell className='font-medium'>{el.ID}</TableCell>
                         <TableCell className='font-medium'>
-                            {truncateString(Title)}
+                            {truncateString(el.Title)}
                         </TableCell>
-                        <TableCell className='font-medium'>{Options}</TableCell>
+                        <TableCell className='font-medium'>
+                            {el.Options}
+                        </TableCell>
 
                         <TableCell>
                             <Button
@@ -71,7 +85,7 @@ function TestModal() {
                             <Button
                                 size='lg'
                                 variant='destructive'
-                                onClick={handleDeleteModal}
+                                onClick={() => handleDeleteModal(el.ID)}
                             >
                                 Delete
                             </Button>
@@ -81,7 +95,9 @@ function TestModal() {
                 <EditModal open={editModalOpen} handleOpen={handleEditModal} />
                 <DeleteModal
                     open={deleteModalOpen}
-                    handleOpen={handleDeleteModal}
+                    handleOpen={deleteModalToggler}
+                    url={urls.getAllTests}
+                    id={testId}
                 />
             </TableBody>
             <TableFooter>

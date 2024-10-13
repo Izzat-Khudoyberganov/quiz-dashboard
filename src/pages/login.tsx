@@ -22,27 +22,25 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+
 import { loginFormSchema } from "@/utils/schema";
 import { toast, Toaster } from "sonner";
 import { useContext, useState } from "react";
 import { UserContext } from "@/context/user-provider";
 import { PasswordInput } from "@/components/ui/password-input";
 import { urls } from "@/utils/urls";
+import { loginFormDefaultValues } from "@/utils/defaults";
 
 function LoginPage() {
     const { handleUser } = useContext(UserContext);
     const [loading, setLoading] = useState<boolean>(false);
     const form = useForm<z.infer<typeof loginFormSchema>>({
         resolver: zodResolver(loginFormSchema),
-        defaultValues: {
-            login: "",
-            password: "",
-        },
+        defaultValues: loginFormDefaultValues,
     });
 
     async function onSubmit(values: z.infer<typeof loginFormSchema>) {
         setLoading(true);
-        // toast("Processing...", { duration: 2000 });
         try {
             const res = await fetch(
                 `${import.meta.env.VITE_API_URL}${urls.login}`,

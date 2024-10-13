@@ -8,41 +8,83 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { Toaster } from "../ui/sonner";
 
 type Props = {
     open: boolean;
     handleOpen: () => void;
+    id: number;
+    url: string;
 };
 
-function DeleteModal({ open, handleOpen }: Props) {
-    function handleDelete(): void {
-        toast.success("Content successfully deleted!");
-        handleOpen();
+function DeleteModal({ open, handleOpen, id, url }: Props) {
+    // delete fn
+    async function handleDelete(): Promise<void> {
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}${url}/${id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            if (response.ok) {
+                console.log("Success");
+                toast.success("Content successfully deleted!");
+                handleOpen();
+            } else if (response.status === 404) {
+                toast.error("Content not found. Please try again.");
+            } else {
+                const errorData = await response.json();
+                console.error("Delete error:", errorData);
+                toast.error(
+                    `Error: ${errorData.message || "Failed to delete content."}`
+                );
+            }
+        } catch (error) {
+            console.error("An error occurred while deleting:", error);
+            toast.error(
+                "An unexpected error occurred. Please try again later."
+            );
+        }
     }
+
     return (
-        <Dialog open={open} onOpenChange={handleOpen}>
-            <DialogContent className='sm:max-w-[425px]'>
-                <DialogHeader>
-                    <DialogTitle className='text-2xl'>Delete test</DialogTitle>
-                    <DialogDescription>
-                        Are you really sure to delete this test content? It may
-                        be never restorable proccess!
-                    </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                    <Button size='lg' variant='secondary' onClick={handleOpen}>
-                        Cancel
-                    </Button>
-                    <Button
-                        size='lg'
-                        variant='destructive'
-                        onClick={handleDelete}
-                    >
-                        Delete
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+        <>
+            <Dialog open={open} onOpenChange={handleOpen}>
+                <DialogContent className='sm:max-w-[425px]'>
+                    <DialogHeader>
+                        <DialogTitle className='text-2xl'>
+                            Delete test {id}
+                        </DialogTitle>
+                        <DialogDescription>
+                            Are you really sure to delete this test content? It
+                            may be never restorable proccess!
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button
+                            size='lg'
+                            variant='secondary'
+                            onClick={handleOpen}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            size='lg'
+                            variant='destructive'
+                            onClick={handleDelete}
+                        >
+                            Delete
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+            <Toaster />
+        </>
     );
 }
 
