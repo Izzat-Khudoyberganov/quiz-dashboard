@@ -10,13 +10,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { ModalPropTypes } from "./type";
 
-type Props = {
-    open: boolean;
-    handleOpen: () => void;
-};
-
-function EditModal({ open, handleOpen }: Props) {
+function EditModal({ open, handleOpen, id, url }: ModalPropTypes) {
     function handleEdit(): void {
         toast.success("Content successfully edited!");
         handleOpen();
@@ -25,7 +21,9 @@ function EditModal({ open, handleOpen }: Props) {
         <Dialog open={open} onOpenChange={handleOpen}>
             <DialogContent className='sm:max-w-[425px]'>
                 <DialogHeader>
-                    <DialogTitle className='text-2xl'>Edit content</DialogTitle>
+                    <DialogTitle className='text-2xl'>
+                        Edit content {id} {url}
+                    </DialogTitle>
                     <DialogDescription>
                         Make changes to your profile here. Click save when
                         you're done.

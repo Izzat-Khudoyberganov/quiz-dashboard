@@ -9,15 +9,9 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Toaster } from "../ui/sonner";
+import { ModalPropTypes } from "./type";
 
-type Props = {
-    open: boolean;
-    handleOpen: () => void;
-    id: number;
-    url: string;
-};
-
-function DeleteModal({ open, handleOpen, id, url }: Props) {
+function DeleteModal({ open, handleOpen, id, url }: ModalPropTypes) {
     // delete fn
     async function handleDelete(): Promise<void> {
         try {

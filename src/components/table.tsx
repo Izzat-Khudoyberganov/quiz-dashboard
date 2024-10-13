@@ -24,15 +24,24 @@ interface TestDataI {
 function TestModal() {
     const [data, setData] = useState<TestDataI[]>([]);
     const [testId, setTestId] = useState<number>(0);
+    const [editTestId, setEditTestId] = useState<number>(0);
 
-    const { isModalOpen: editModalOpen, toggleModal: handleEditModal } =
-        useModal();
+    const {
+        isModalOpen: editModalOpen,
+        setIsModalOpen: setEditModal,
+        toggleModal: editModalToggler,
+    } = useModal();
 
     const {
         isModalOpen: deleteModalOpen,
         setIsModalOpen,
         toggleModal: deleteModalToggler,
     } = useModal();
+
+    function handleEditModal(id: number) {
+        setEditTestId(id);
+        setEditModal(!editModalOpen);
+    }
 
     function handleDeleteModal(id: number) {
         setTestId(id);
@@ -76,7 +85,7 @@ function TestModal() {
                             <Button
                                 size='lg'
                                 variant='secondary'
-                                onClick={handleEditModal}
+                                onClick={() => handleEditModal(el.ID)}
                             >
                                 Edit
                             </Button>
@@ -92,7 +101,12 @@ function TestModal() {
                         </TableCell>
                     </TableRow>
                 ))}
-                <EditModal open={editModalOpen} handleOpen={handleEditModal} />
+                <EditModal
+                    open={editModalOpen}
+                    handleOpen={editModalToggler}
+                    id={editTestId}
+                    url={urls.getAllTests}
+                />
                 <DeleteModal
                     open={deleteModalOpen}
                     handleOpen={deleteModalToggler}
