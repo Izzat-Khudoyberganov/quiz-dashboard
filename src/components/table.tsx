@@ -71,9 +71,9 @@ function TestModal() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {data.map((el) => (
+                {data.map((el, i) => (
                     <TableRow key={el.ID}>
-                        <TableCell className='font-medium'>{el.ID}</TableCell>
+                        <TableCell className='font-medium'>{i + 1}</TableCell>
                         <TableCell className='font-medium'>
                             {truncateString(el.Title)}
                         </TableCell>
