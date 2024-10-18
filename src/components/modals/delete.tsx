@@ -10,6 +10,7 @@ import {
 import { toast } from "sonner";
 import { Toaster } from "../ui/sonner";
 import { ModalPropTypes } from "./type";
+import { httpsStatusMessages } from "@/utils/http-status-messages";
 
 function DeleteModal({ open, handleOpen, id, url, refetch }: ModalPropTypes) {
     // delete fn
@@ -26,23 +27,21 @@ function DeleteModal({ open, handleOpen, id, url, refetch }: ModalPropTypes) {
             );
 
             if (response.ok) {
-                toast.success("Content successfully deleted!");
+                toast.success(httpsStatusMessages.deleting);
                 handleOpen();
-                refetch()
+                refetch();
             } else if (response.status === 404) {
-                toast.error("Content not found. Please try again.");
+                toast.error(httpsStatusMessages.notfound);
             } else {
                 const errorData = await response.json();
-                console.error("Delete error:", errorData);
+                console.error(httpsStatusMessages.error, errorData);
                 toast.error(
                     `Error: ${errorData.message || "Failed to delete content."}`
                 );
             }
         } catch (error) {
-            console.error("An error occurred while deleting:", error);
-            toast.error(
-                "An unexpected error occurred. Please try again later."
-            );
+            console.error(httpsStatusMessages.error, error);
+            toast.error(httpsStatusMessages.error);
         }
     }
 
@@ -59,7 +58,7 @@ function DeleteModal({ open, handleOpen, id, url, refetch }: ModalPropTypes) {
                             may be never restorable proccess!
                         </DialogDescription>
                     </DialogHeader>
-                    <DialogFooter className="flex items-center justify-between flex-row mt-5">
+                    <DialogFooter className='flex items-center justify-between flex-row mt-5'>
                         <Button
                             size='lg'
                             variant='secondary'
@@ -72,7 +71,7 @@ function DeleteModal({ open, handleOpen, id, url, refetch }: ModalPropTypes) {
                             variant='destructive'
                             onClick={handleDelete}
                         >
-                           Delete
+                            Delete
                         </Button>
                     </DialogFooter>
                 </DialogContent>

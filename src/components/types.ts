@@ -9,3 +9,8 @@ export interface RoutesDataI {
     href: string;
     link: string;
 }
+
+export type ErrorBoundaryPropTypes = {
+    title: string;
+    message: string;
+};

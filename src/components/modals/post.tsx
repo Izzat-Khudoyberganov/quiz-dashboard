@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -16,11 +16,33 @@ import { urls } from "@/utils/urls";
 import { testFormDefaultValues } from "@/utils/defaults";
 import { FormInput } from "@/components";
 import { Form } from "@/components/ui/form";
-import { toast } from "sonner";
-import { getData } from "@/utils/http";
+import { getData, postData } from "@/utils/http";
 import { TestDataI } from "@/components/types";
+import { toast } from "sonner";
+import { httpsStatusMessages } from "@/utils/http-status-messages";
+import { MutationParams } from "./type";
+import { ErrorBoundary } from "../error-boundary";
 
 function PostDrawer({ open, toggleModal }: ModalPropType) {
+    const { mutate, isError, error, isPending } = useMutation<
+        unknown,
+        Error,
+        MutationParams
+    >({
+        mutationFn: ({ url, data }) => postData({ url, data }),
+
+        onSuccess: () => {
+            toggleModal();
+            toast.success(httpsStatusMessages.creating);
+            refetch();
+        },
+
+        onError: (error) => {
+            console.error(httpsStatusMessages.error, error);
+            toast.error(httpsStatusMessages.error);
+        },
+    });
+
     const form = useForm<z.infer<typeof postTestformSchema>>({
         resolver: zodResolver(postTestformSchema),
         defaultValues: testFormDefaultValues,
@@ -43,32 +65,7 @@ function PostDrawer({ open, toggleModal }: ModalPropType) {
             ],
         };
 
-        try {
-            const response = await fetch(
-                `${import.meta.env.VITE_API_URL}${urls.tests}`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(data),
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error(
-                    `Failed to submit form: ${response.status} ${response.statusText}`
-                );
-            }
-
-            toast.success("Test successfully created");
-            refetch();
-        } catch (error) {
-            console.error("Submission error:", error);
-            toast.error("Something went wrong, look at the console.");
-        } finally {
-            toggleModal();
-        }
+        mutate({ url: urls.tests, data });
     }
 
     useEffect(() => {
@@ -76,6 +73,7 @@ function PostDrawer({ open, toggleModal }: ModalPropType) {
             form.reset();
         }
     }, [open]);
+
     return (
         <Sheet open={open} onOpenChange={toggleModal}>
             <SheetContent className='w-[500px]'>
@@ -127,12 +125,24 @@ function PostDrawer({ open, toggleModal }: ModalPropType) {
                             >
                                 Cancel
                             </Button>
-                            <Button type='submit' variant='secondary' size='lg'>
-                                Submit
+                            <Button
+                                type='submit'
+                                variant='secondary'
+                                size='lg'
+                                disabled={isPending}
+                            >
+                                {isPending ? "Submiting..." : "Submit"}
                             </Button>
                         </div>
                     </form>
                 </Form>
+
+                {isError && (
+                    <ErrorBoundary
+                        title={httpsStatusMessages.error}
+                        message={error.message}
+                    />
+                )}
             </SheetContent>
         </Sheet>
     );

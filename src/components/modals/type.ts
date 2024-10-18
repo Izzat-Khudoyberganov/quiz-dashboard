@@ -5,3 +5,11 @@ export type ModalPropTypes = {
     url: string;
     refetch: () => {};
 };
+
+export interface MutationParams {
+    url: string;
+    data: {
+        title: string;
+        options: string[];
+    };
+}
