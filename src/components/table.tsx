@@ -13,15 +13,10 @@ import {
 import { Button } from "./ui/button";
 import { truncateString } from "@/utils/helper";
 import { DeleteModal, EditModal } from "./modals";
-import useModal from "@/hooks/useModal";
 import { useQuery } from "@tanstack/react-query";
 import { getData } from "@/utils/http";
-
-interface TestDataI {
-    ID: number;
-    Title: string;
-    Options: string;
-}
+import { TestDataI } from "./types";
+import useModal from "@/hooks/useModal";
 
 function TestModal() {
     const [testId, setTestId] = useState<number>(0);
@@ -31,9 +26,6 @@ function TestModal() {
         queryKey: ["tests"],
         queryFn: () => getData(urls.getAllTests)
     })
-
-    console.log(data, "datataaa");
-    
 
     const {
         isModalOpen: editModalOpen,
@@ -56,8 +48,6 @@ function TestModal() {
         setTestId(id);
         setIsModalOpen(!deleteModalOpen);
     }
-
-   
 
     return (
         <Table>
