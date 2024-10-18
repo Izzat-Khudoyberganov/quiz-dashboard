@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { urls } from "@/utils/urls";
 import {
     Table,
@@ -14,6 +14,8 @@ import { Button } from "./ui/button";
 import { truncateString } from "@/utils/helper";
 import { DeleteModal, EditModal } from "./modals";
 import useModal from "@/hooks/useModal";
+import { useQuery } from "@tanstack/react-query";
+import { getData } from "@/utils/http";
 
 interface TestDataI {
     ID: number;
@@ -22,9 +24,16 @@ interface TestDataI {
 }
 
 function TestModal() {
-    const [data, setData] = useState<TestDataI[]>([]);
     const [testId, setTestId] = useState<number>(0);
     const [editTestId, setEditTestId] = useState<number>(0);
+
+    const { data, isLoading, isError, refetch } = useQuery<TestDataI[]>({
+        queryKey: ["tests"],
+        queryFn: () => getData(urls.getAllTests)
+    })
+
+    console.log(data, "datataaa");
+    
 
     const {
         isModalOpen: editModalOpen,
@@ -48,15 +57,7 @@ function TestModal() {
         setIsModalOpen(!deleteModalOpen);
     }
 
-    async function getData() {
-        await fetch(`${import.meta.env.VITE_API_URL}${urls.getAllTests}`)
-            .then((res) => res.json())
-            .then((json) => setData(json));
-    }
-
-    useEffect(() => {
-        getData();
-    }, []);
+   
 
     return (
         <Table>
@@ -71,47 +72,57 @@ function TestModal() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {data.map((el) => (
-                    <TableRow key={el.ID}>
-                        <TableCell className='font-medium'>{el.ID}</TableCell>
-                        <TableCell className='font-medium'>
-                            {truncateString(el.Title)}
-                        </TableCell>
-                        <TableCell className='font-medium'>
-                            {el.Options}
-                        </TableCell>
-
-                        <TableCell>
-                            <Button
-                                size='lg'
-                                variant='secondary'
-                                onClick={() => handleEditModal(el.ID)}
-                            >
-                                Edit
-                            </Button>
-                        </TableCell>
-                        <TableCell>
-                            <Button
-                                size='lg'
-                                variant='destructive'
-                                onClick={() => handleDeleteModal(el.ID)}
-                            >
-                                Delete
-                            </Button>
+                 {data?.length ? (
+                    data.map((el) => (
+                        <TableRow key={el.ID}>
+                            <TableCell className='font-medium'>{el.ID}</TableCell>
+                            <TableCell className='font-medium'>
+                                {truncateString(el.Title)}
+                            </TableCell>
+                            <TableCell className='font-medium'>
+                                {el.Options}
+                            </TableCell>
+                            <TableCell>
+                                <Button
+                                    size='lg'
+                                    variant='secondary'
+                                    onClick={() => handleEditModal(el.ID)}
+                                >
+                                    Edit
+                                </Button>
+                            </TableCell>
+                            <TableCell>
+                                <Button
+                                    size='lg'
+                                    variant='destructive'
+                                    onClick={() => handleDeleteModal(el.ID)}
+                                >
+                                    Delete
+                                </Button>
+                            </TableCell>
+                        </TableRow>
+                    ))
+                ) : (
+                    <TableRow>
+                        <TableCell colSpan={5} className='text-center'>
+                            {isLoading ? "Loading..." : isError ? "Error loading data." : "No data available."}
                         </TableCell>
                     </TableRow>
-                ))}
+                )} 
+
                 <EditModal
                     open={editModalOpen}
                     handleOpen={editModalToggler}
                     id={editTestId}
                     url={urls.getAllTests}
+                    refetch={refetch}
                 />
                 <DeleteModal
                     open={deleteModalOpen}
                     handleOpen={deleteModalToggler}
                     url={urls.getAllTests}
                     id={testId}
+                    refetch={refetch}
                 />
             </TableBody>
             <TableFooter>

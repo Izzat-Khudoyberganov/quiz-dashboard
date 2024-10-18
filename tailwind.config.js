@@ -6,7 +6,15 @@ export default {
         "./src/**/*.{js,ts,jsx,tsx}",
         "./node_modules/@shadcn/**/*.{js,ts,jsx,tsx}",
     ],
+
     theme: {
+        container: {
+            center: true,
+            padding: "1rem",
+        },
+        screens: {
+            xxl: "100%"
+        },
         extend: {
             borderRadius: {
                 lg: "var(--radius)",

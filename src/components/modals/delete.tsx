@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { Toaster } from "../ui/sonner";
 import { ModalPropTypes } from "./type";
 
-function DeleteModal({ open, handleOpen, id, url }: ModalPropTypes) {
+function DeleteModal({ open, handleOpen, id, url, refetch }: ModalPropTypes) {
     // delete fn
     async function handleDelete(): Promise<void> {
         try {
@@ -26,9 +26,9 @@ function DeleteModal({ open, handleOpen, id, url }: ModalPropTypes) {
             );
 
             if (response.ok) {
-                console.log("Success");
                 toast.success("Content successfully deleted!");
                 handleOpen();
+                refetch()
             } else if (response.status === 404) {
                 toast.error("Content not found. Please try again.");
             } else {
@@ -59,7 +59,7 @@ function DeleteModal({ open, handleOpen, id, url }: ModalPropTypes) {
                             may be never restorable proccess!
                         </DialogDescription>
                     </DialogHeader>
-                    <DialogFooter>
+                    <DialogFooter className="flex items-center justify-between flex-row mt-5">
                         <Button
                             size='lg'
                             variant='secondary'
@@ -72,7 +72,7 @@ function DeleteModal({ open, handleOpen, id, url }: ModalPropTypes) {
                             variant='destructive'
                             onClick={handleDelete}
                         >
-                            Delete
+                           Delete
                         </Button>
                     </DialogFooter>
                 </DialogContent>

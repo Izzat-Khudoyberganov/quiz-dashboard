@@ -12,10 +12,11 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { ModalPropTypes } from "./type";
 
-function EditModal({ open, handleOpen, id, url }: ModalPropTypes) {
+function EditModal({ open, handleOpen, id, url, refetch }: ModalPropTypes) {
     function handleEdit(): void {
         toast.success("Content successfully edited!");
         handleOpen();
+        refetch()
     }
     return (
         <Dialog open={open} onOpenChange={handleOpen}>

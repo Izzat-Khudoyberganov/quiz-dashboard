@@ -18,11 +18,22 @@ import { testFormDefaultValues } from "@/utils/defaults";
 import FormInput from "../input";
 import { Form } from "../ui/form";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { getData } from "@/utils/http";
+import { TestDataI } from "../types";
 
 function PostDrawer({ open, toggleModal }: ModalPropType) {
+
+
     const form = useForm<z.infer<typeof postTestformSchema>>({
         resolver: zodResolver(postTestformSchema),
         defaultValues: testFormDefaultValues,
+    });
+
+    const { refetch } = useQuery<TestDataI[]>({ 
+        queryKey: ["tests"],
+        queryFn: () => getData(urls.getAllTests),
+        enabled: false
     });
 
     async function onSubmit(values: z.infer<typeof postTestformSchema>) {
@@ -54,9 +65,8 @@ function PostDrawer({ open, toggleModal }: ModalPropType) {
                 );
             }
 
-            const result = await response.json();
             toast.success("Test successfully created");
-            console.log("Success:", result);
+            refetch()
         } catch (error) {
             console.error("Submission error:", error);
             toast.error("Something went wrong, look at the console.");
