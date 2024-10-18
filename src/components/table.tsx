@@ -27,7 +27,7 @@ function TestModal() {
     const [testId, setTestId] = useState<number>(0);
     const [editTestId, setEditTestId] = useState<number>(0);
 
-    const { data, isLoading, isError, refetch } = useQuery<TestDataI[]>({
+    const { data, refetch } = useQuery<TestDataI[]>({
         queryKey: ["tests"],
         queryFn: () => getData(urls.getAllTests)
     })
@@ -72,44 +72,36 @@ function TestModal() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                 {data?.length ? (
-                    data.map((el) => (
-                        <TableRow key={el.ID}>
-                            <TableCell className='font-medium'>{el.ID}</TableCell>
-                            <TableCell className='font-medium'>
-                                {truncateString(el.Title)}
-                            </TableCell>
-                            <TableCell className='font-medium'>
-                                {el.Options}
-                            </TableCell>
-                            <TableCell>
-                                <Button
-                                    size='lg'
-                                    variant='secondary'
-                                    onClick={() => handleEditModal(el.ID)}
-                                >
-                                    Edit
-                                </Button>
-                            </TableCell>
-                            <TableCell>
-                                <Button
-                                    size='lg'
-                                    variant='destructive'
-                                    onClick={() => handleDeleteModal(el.ID)}
-                                >
-                                    Delete
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                    ))
-                ) : (
-                    <TableRow>
-                        <TableCell colSpan={5} className='text-center'>
-                            {isLoading ? "Loading..." : isError ? "Error loading data." : "No data available."}
+                {data?.map((el) => (
+                    <TableRow key={el.ID}>
+                        <TableCell className='font-medium'>{el.ID}</TableCell>
+                        <TableCell className='font-medium'>
+                            {truncateString(el.Title)}
+                        </TableCell>
+                        <TableCell className='font-medium'>
+                            {el.Options}
+                        </TableCell>
+
+                        <TableCell>
+                            <Button
+                                size='lg'
+                                variant='secondary'
+                                onClick={() => handleEditModal(el.ID)}
+                            >
+                                Edit
+                            </Button>
+                        </TableCell>
+                        <TableCell>
+                            <Button
+                                size='lg'
+                                variant='destructive'
+                                onClick={() => handleDeleteModal(el.ID)}
+                            >
+                                Delete
+                            </Button>
                         </TableCell>
                     </TableRow>
-                )} 
-
+                ))}
                 <EditModal
                     open={editModalOpen}
                     handleOpen={editModalToggler}
