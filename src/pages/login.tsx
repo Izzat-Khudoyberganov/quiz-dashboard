@@ -58,7 +58,7 @@ function LoginPage() {
                 toast.error("Could not login, check login and password!");
             }
         } catch (err) {
-            console.error("err");
+            console.error("err", err);
         } finally {
             setLoading(false);
         }

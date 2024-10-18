@@ -1,9 +1,9 @@
+import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
-
 import {
     Sheet,
     SheetContent,
@@ -11,29 +11,25 @@ import {
     SheetTitle,
 } from "@/components/ui/sheet";
 import { ModalPropType } from "@/type";
-import { useEffect } from "react";
 import { postTestformSchema } from "@/utils/schema";
 import { urls } from "@/utils/urls";
 import { testFormDefaultValues } from "@/utils/defaults";
-import FormInput from "../input";
-import { Form } from "../ui/form";
+import { FormInput } from "@/components";
+import { Form } from "@/components/ui/form";
 import { toast } from "sonner";
-import { useQuery } from "@tanstack/react-query";
 import { getData } from "@/utils/http";
-import { TestDataI } from "../types";
+import { TestDataI } from "@/components/types";
 
 function PostDrawer({ open, toggleModal }: ModalPropType) {
-
-
     const form = useForm<z.infer<typeof postTestformSchema>>({
         resolver: zodResolver(postTestformSchema),
         defaultValues: testFormDefaultValues,
     });
 
-    const { refetch } = useQuery<TestDataI[]>({ 
+    const { refetch } = useQuery<TestDataI[]>({
         queryKey: ["tests"],
-        queryFn: () => getData(urls.getAllTests),
-        enabled: false
+        queryFn: () => getData(urls.tests),
+        enabled: false,
     });
 
     async function onSubmit(values: z.infer<typeof postTestformSchema>) {
@@ -49,7 +45,7 @@ function PostDrawer({ open, toggleModal }: ModalPropType) {
 
         try {
             const response = await fetch(
-                `${import.meta.env.VITE_API_URL}${urls.getAllTests}`,
+                `${import.meta.env.VITE_API_URL}${urls.tests}`,
                 {
                     method: "POST",
                     headers: {
@@ -66,7 +62,7 @@ function PostDrawer({ open, toggleModal }: ModalPropType) {
             }
 
             toast.success("Test successfully created");
-            refetch()
+            refetch();
         } catch (error) {
             console.error("Submission error:", error);
             toast.error("Something went wrong, look at the console.");

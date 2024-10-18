@@ -1,5 +1,5 @@
 export const urls = {
-    getAllTests: "/tests",
-    getOneTest: (id: number) => `/tests/${id}`,
+    tests: "/tests",
+    test: (id: number) => `/tests/${id}`,
     login: "/login",
 };

@@ -6,6 +6,7 @@ import {
     CommandItem,
     CommandList,
 } from "@/components/ui/command";
+import { routeData } from "./data";
 
 const Sidebar = () => {
     return (
@@ -17,16 +18,13 @@ const Sidebar = () => {
                 />
                 <CommandList>
                     <CommandGroup className='text-lg px-2'>
-                        <CommandItem>
-                            <Link to='/' className='w-full p-2 text-lg'>
-                                User
-                            </Link>
-                        </CommandItem>
-                        <CommandItem>
-                            <Link to='/test' className='w-full p-2 text-lg'>
-                                Test
-                            </Link>
-                        </CommandItem>
+                        {routeData.map(({ id, href, link }) => (
+                            <CommandItem key={id}>
+                                <Link to={href} className='w-full p-2 text-lg'>
+                                    {link}
+                                </Link>
+                            </CommandItem>
+                        ))}
                     </CommandGroup>
                 </CommandList>
             </Command>

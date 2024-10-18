@@ -3,5 +3,5 @@ export type ModalPropTypes = {
     handleOpen: () => void;
     id: number;
     url: string;
-    refetch: () =>{}
+    refetch: () => {};
 };

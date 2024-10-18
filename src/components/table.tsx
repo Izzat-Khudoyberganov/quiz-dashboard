@@ -24,8 +24,8 @@ function TestModal() {
 
     const { data, refetch } = useQuery<TestDataI[]>({
         queryKey: ["tests"],
-        queryFn: () => getData(urls.getAllTests)
-    })
+        queryFn: () => getData(urls.tests),
+    });
 
     const {
         isModalOpen: editModalOpen,
@@ -96,13 +96,13 @@ function TestModal() {
                     open={editModalOpen}
                     handleOpen={editModalToggler}
                     id={editTestId}
-                    url={urls.getAllTests}
+                    url={urls.tests}
                     refetch={refetch}
                 />
                 <DeleteModal
                     open={deleteModalOpen}
                     handleOpen={deleteModalToggler}
-                    url={urls.getAllTests}
+                    url={urls.tests}
                     id={testId}
                     refetch={refetch}
                 />

@@ -3,3 +3,9 @@ export interface TestDataI {
     Title: string;
     Options: string;
 }
+
+export interface RoutesDataI {
+    id: number;
+    href: string;
+    link: string;
+}
