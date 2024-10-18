@@ -6,7 +6,15 @@ interface PostDataParams<T> {
     data: T;
 }
 
+export interface DeleteParamsI {
+    url: string;
+    id: number;
+}
+
 const baseUrl = import.meta.env.VITE_API_URL;
+const headers = {
+    "Content-Type": "application/json",
+};
 
 export async function getData(url: string) {
     try {
@@ -25,20 +33,24 @@ export async function postData<T, R>({
     const res = await fetch(`${baseUrl}${url}`, {
         method: "POST",
         body: JSON.stringify(data),
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers,
     });
 
     if (!res.ok) {
         const error = new Error(httpsStatusMessages.error);
         throw error;
     }
-
     const { content } = await res.json();
-
     return content as R;
 }
 
+export async function deleteData({ url, id }: DeleteParamsI): Promise<void> {
+    const res = await fetch(`${baseUrl}${url}/${id}`, {
+        method: "DELETE",
+    });
 
-
+    if (!res.ok) {
+        const error = new Error(httpsStatusMessages.error);
+        throw error;
+    }
+}

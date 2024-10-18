@@ -21,7 +21,7 @@ import { TestDataI } from "@/components/types";
 import { toast } from "sonner";
 import { httpsStatusMessages } from "@/utils/http-status-messages";
 import { MutationParams } from "./type";
-import { ErrorBoundary } from "../error-boundary";
+import { ErrorBoundary } from "@/components";
 
 function PostDrawer({ open, toggleModal }: ModalPropType) {
     const { mutate, isError, error, isPending } = useMutation<

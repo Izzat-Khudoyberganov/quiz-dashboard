@@ -11,38 +11,32 @@ import { toast } from "sonner";
 import { Toaster } from "../ui/sonner";
 import { ModalPropTypes } from "./type";
 import { httpsStatusMessages } from "@/utils/http-status-messages";
+import { useMutation } from "@tanstack/react-query";
+import { deleteData, DeleteParamsI } from "@/utils/http";
+import { ErrorBoundary } from "@/components";
 
 function DeleteModal({ open, handleOpen, id, url, refetch }: ModalPropTypes) {
-    // delete fn
-    async function handleDelete(): Promise<void> {
-        try {
-            const response = await fetch(
-                `${import.meta.env.VITE_API_URL}${url}/${id}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
+    const { mutate, isError, isPending, error } = useMutation<
+        void,
+        Error,
+        DeleteParamsI
+    >({
+        mutationFn: deleteData,
 
-            if (response.ok) {
-                toast.success(httpsStatusMessages.deleting);
-                handleOpen();
-                refetch();
-            } else if (response.status === 404) {
-                toast.error(httpsStatusMessages.notfound);
-            } else {
-                const errorData = await response.json();
-                console.error(httpsStatusMessages.error, errorData);
-                toast.error(
-                    `Error: ${errorData.message || "Failed to delete content."}`
-                );
-            }
-        } catch (error) {
+        onSuccess: () => {
+            toast.success(httpsStatusMessages.deleting);
+            handleOpen();
+            refetch();
+        },
+
+        onError: (error) => {
             console.error(httpsStatusMessages.error, error);
             toast.error(httpsStatusMessages.error);
-        }
+        },
+    });
+
+    async function handleDelete(): Promise<void> {
+        mutate({ url, id });
     }
 
     return (
@@ -70,11 +64,18 @@ function DeleteModal({ open, handleOpen, id, url, refetch }: ModalPropTypes) {
                             size='lg'
                             variant='destructive'
                             onClick={handleDelete}
+                            disabled={isPending}
                         >
-                            Delete
+                            {isPending ? "Deleting..." : "Delete"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
+                {isError && (
+                    <ErrorBoundary
+                        title={httpsStatusMessages.error}
+                        message={error.message}
+                    />
+                )}
             </Dialog>
             <Toaster />
         </>
